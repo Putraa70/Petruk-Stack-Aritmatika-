@@ -85,6 +85,34 @@ vector<string> infixToPostfix(const vector<string>& infix){
     }
     return postfix;
 }
+float evaluatePostfix(const vector<string>& postfix) {
+    stack<float> values;
+    for(const string& token : postfix) {
+        if(isdigit(token[0]) || token[0] == '.' || (token.size() > 1 && (isdigit(token[1]) || token[1] == '.'))) {
+        values.push(stof(token));
+        }else if(isOperator(token[0])) {
+        float b = values.top(); values.pop();
+        float a = values.top(); values.pop();
+        float result = 0;
+
+        switch (token[0]) {
+            case '+': result = a + b; break;
+            case '-': result = a - b; break;
+            case '*': result = a * b; break;
+            case '/': result = a / b; break;
+            case '%': result = fmod(a,b); break;
+            }
+            values.push(result);
+        }
+    }
+    return values.top();
+}
+void printElemen(const vector<string>& infix){
+    for(size_t i = 0; i < infix.size(); i++){
+        cout << infix[i] << " ";
+    }
+    cout << endl;
+}
 
 int main(){
     string infix;
@@ -97,5 +125,8 @@ int main(){
     vector<string> InfixtoPostfix = infixToPostfix(Parsingtoinfix);
     cout << "Hasil postfix: ";
     printElemen(InfixtoPostfix);
+    
+    float Evaluate = evaluatePostfix(InfixtoPostfix);
+    cout << "Hasil: "<<Evaluate << endl;
     return 0;
 }
