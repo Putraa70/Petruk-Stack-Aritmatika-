@@ -56,6 +56,36 @@ void printElemen(const vector<string>& infix){
     cout << endl;
 }
 
+vector<string> infixToPostfix(const vector<string>& infix){
+    vector<string> postfix;
+    stack<string> ops;
+
+    for(const string& token : infix){
+        if(isdigit(token[0]) || token[0] == '.' || (token.size()>1 && (isdigit(token[1]) || token[1] == '.'))){
+            postfix.push_back(token);
+        }else if(token == "("){
+            ops.push(token);
+        }else if(token == ")"){
+            while (!ops.empty() && ops.top() != "("){
+                postfix.push_back(ops.top());
+                ops.pop();
+            }
+            if(!ops.empty()) ops.pop();
+        }else if(isOperator(token[0])){
+            while(!ops.empty() && Precedence(ops.top()[0]) >= Precedence(token[0])){
+                postfix.push_back(ops.top());
+                ops.pop();
+            }
+            ops.push(token);
+        }
+    }
+    while(!ops.empty()){
+        postfix.push_back(ops.top());
+        ops.pop();
+    }
+    return postfix;
+}
+
 int main(){
     string infix;
     getline(cin, infix);
@@ -64,5 +94,8 @@ int main(){
     cout << "Hasil infix: ";
     printElemen(Parsingtoinfix);
 
+    vector<string> InfixtoPostfix = infixToPostfix(Parsingtoinfix);
+    cout << "Hasil postfix: ";
+    printElemen(InfixtoPostfix);
     return 0;
 }
